@@ -1,6 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>单链表</title>
+    <url>/2024/01/16/%E5%8D%95%E9%93%BE%E8%A1%A8/</url>
+    <content><![CDATA[<p>链表有多种类型，最简单的是单链表，其结构如下图：</p>
+<img  
+                       lazyload
+                       alt="image"
+                       data-src="/2024/01/16/%E5%8D%95%E9%93%BE%E8%A1%A8/%E5%8D%95%E9%93%BE%E8%A1%A8.png"
+                        class="" title="单链表"
+                 >
+
+<p>我们先关注两个特殊的结点：第一个结点作为头结点，最后一个结点作为尾结点。头结点记录了链表的基地址，通过它可以找到整条链表；尾结点因为是最后一个结点，所以它不存在下一个结点，它指向 <code>NULL</code>。</p>
+<blockquote>
+<p>头结点并不是必须的，我们完全可以把第一个结点当成普通的结点使用。不过一般建立一个头结点会方便我们的各种操作，好处多多。学习不必教条，一切以实际需求为主。本文章以带头的链表作为示例。</p>
+</blockquote>
+<p>单链表的结点可以简单定义如下：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Node 结点</span></span><br><span class="line"><span class="keyword">type</span> Node <span class="keyword">struct</span> &#123;</span><br><span class="line">    Value <span class="type">int</span>   <span class="comment">// 数据</span></span><br><span class="line">    Next  *Node <span class="comment">// 下一个结点</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中，<code>Value</code> 用来存放结点数据，这里存放的是整型。<code>Next</code> 指向链表的下一个 <code>Node</code>。</p>
+<h2 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h2><p>在一些课本上将链表的初始化分为<strong>头插法</strong>和<strong>尾插法</strong>，原理大同小异，不过一个将新结点连接到头部一个将新结点连接到尾部罢了，这里以更符合直觉的尾插法为例：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Init 初始化</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(node *Node)</span></span> Init(n <span class="type">int</span>) &#123;</span><br><span class="line">    p := node</span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">1</span>; i &lt;= n; i++ &#123;</span><br><span class="line">        newNode := &amp;Node&#123;Value: i&#125;</span><br><span class="line">        p.Next = newNode</span><br><span class="line">        p = newNode</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意不要修改头结点</strong>。当你对链表进行遍历时，会更新当前结点为下一个结点，而头结点指向单链表的第一个结点，如果头结点被修改了，你就找不到完整的链表了。所以我们应当将头结点拷贝一份，再对备份数据进行操作。</p>
+<h2 id="遍历打印"><a href="#遍历打印" class="headerlink" title="遍历打印"></a>遍历打印</h2><p>实现一个链表的遍历并打印结点数据，我们可以利用尾结点指向空来判断遍历是否结束：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Display 打印链表</span></span><br><span class="line"><span class="comment">// Display 打印链表</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(node *Node)</span></span> Display() &#123;</span><br><span class="line">    <span class="keyword">for</span> p := node.Next; p != <span class="literal">nil</span>; p = p.Next &#123;</span><br><span class="line">        fmt.Printf(<span class="string">&quot;%d &quot;</span>, p.Value)</span><br><span class="line">    &#125;</span><br><span class="line">    fmt.Println()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对于带头结点的单链表，头结点并不存储实际数据，所以要从第二个结点开始读取数据。</p>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>现在，你可以使用上述两个方法获取属于自己的单链表了：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    link := <span class="built_in">new</span>(Node)</span><br><span class="line">    link.Init(<span class="number">5</span>)</span><br><span class="line">    link.Display()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在上述代码中，我们首先构造了一个结点作为头结点，然后使用尾插法初始化单链表，最后打印这个单链表的所有数据。输出结果如下：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span> <span class="number">2</span> <span class="number">3</span> <span class="number">4</span> <span class="number">5</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="查找"><a href="#查找" class="headerlink" title="查找"></a>查找</h2><p>既然我们已经学会了如何遍历单链表，那么自然就可以查找结点了：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Search 查找结点</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(node *Node)</span></span> Search(value <span class="type">int</span>) *Node &#123;</span><br><span class="line">    <span class="keyword">for</span> p := node.Next; p != <span class="literal">nil</span>; p = p.Next &#123;</span><br><span class="line">        <span class="keyword">if</span> p.Value == value &#123;</span><br><span class="line">            <span class="keyword">return</span> p</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上述代码中，我们遍历整个链表，如果找到了想要的数据，就将该数据所在结点返回。如果遍历完了都没有找到，就返回 <code>nil</code>。</p>
+<h2 id="长度"><a href="#长度" class="headerlink" title="长度"></a>长度</h2><p>头结点其实和普通结点没有任何区别，只是在逻辑上比较特殊罢了，它和普通结点一样拥有数据域，我们不应该浪费这段空间。现在，让我们想办法利用头结点来存储一些数据。</p>
+<p>试想一下我们要怎么获取单链表的长度？很简单，遍历时加上计数就是了。但是在链表的操作中“长度”是一个要频繁更新和使用的值，如果每次使用都要整个遍历一遍链表那效率也太低了。</p>
+<p>我们完全可以将链表的长度存放在头结点中，在对链表进行增删时当即更新长度数据，这样在要用到链表长度时直接读取头结点的数据就好了。</p>
+<p>比如上面提到过的单链表的初始化：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Init 初始化</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(node *Node)</span></span> Init(n <span class="type">int</span>) &#123;</span><br><span class="line">    p := node</span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">1</span>; i &lt;= n; i++ &#123;</span><br><span class="line">        newNode := &amp;Node&#123;Value: i&#125;</span><br><span class="line">        p.Next = newNode</span><br><span class="line">        p = newNode</span><br><span class="line">    &#125;</span><br><span class="line">    node.Value = n <span class="comment">// 存储单链表长度</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如此，获取单链表的长度代码如下：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Len 链表的长度</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(node *Node)</span></span> Len() <span class="type">int</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> node.Value</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>这里的链表长度记录方法只是一种可行的方法罢了，绝对说不上好。比如如果单链表的数据类型不是整形而是字符串呢？都会麻烦很多。更推荐的做法是单独定义一个单链表结构体，将长度等相关信息直接存放在结构体中，大概的结构如下：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> Link <span class="keyword">struct</span> &#123;</span><br><span class="line">    Len <span class="type">int</span>     <span class="comment">// 链表长度</span></span><br><span class="line">    Head *Node <span class="comment">// 头结点</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>总之还是那句话，不要教条学习，本文章大多还是简单的演示示例，具体还得结合实际需求自己多写多尝试。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>数据结构</category>
+      </categories>
+      <tags>
+        <tag>go</tag>
+        <tag>单链表</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>链表</title>
     <url>/2024/01/15/%E9%93%BE%E8%A1%A8/</url>
     <content><![CDATA[<p>链表可以说是最基础、实用的数据结构了，几乎被所有程序设计语言支持。它以链式存取，链表中的数据以结点来表示。</p>
@@ -12,59 +72,15 @@
 </blockquote>
 <h2 id="链表分类"><a href="#链表分类" class="headerlink" title="链表分类"></a>链表分类</h2><p>依据结构的区别，我们一般可以把链表分为：单链表、双链表和循环链表。</p>
 <ul>
-<li><p>单链表： 每个结点只指向下一个结点，通过依次访问单个结点及其下一个结点实现链表的遍历，遍历是单向的，只能从前往后遍历。</p>
+<li><a href="/2024/01/16/%E5%8D%95%E9%93%BE%E8%A1%A8/" title="单链表">单链表</a>： 每个结点只指向下一个结点，通过依次访问单个结点及其下一个结点实现链表的遍历，遍历是单向的，只能从前往后遍历。
 </li>
 <li><p>双链表： 每个结点不光指向下一个节点，还同时指向上一个节点，所以在遍历时既可以向后遍历也可以向前遍历。</p>
 </li>
 <li><p>循环链表： 不论是单链表还是双链表都有“边界”，在遍历到第一个结点或最后一个结点后就无路可走了，现在将链表的头部和尾部相连，就得到了一个循环双链表，一个环形结构，可以无限循环遍历。结合不同的连接方式还可以具体区分为循环单链表和循环双链表。</p>
 </li>
 </ul>
-<h2 id="单链表"><a href="#单链表" class="headerlink" title="单链表"></a>单链表</h2><p>链表有多种类型，最简单的是单链表，其结构如下图：</p>
-<p><img lazyload="" alt="image" data-src="/%E5%8D%95%E9%93%BE%E8%A1%A8.svg"></p>
-<p>我们先关注两个特殊的结点：第一个结点作为头结点，最后一个结点作为尾结点。头结点记录了链表的基地址，通过它可以找到整条链表；尾结点因为是最后一个结点，所以它不存在下一个结点，它指向 <code>NULL</code>。</p>
 <blockquote>
-<p>头结点并不是必须的，我们完全可以把第一个结点当成普通的结点使用。不过一般建立一个头结点会方便我们的各种操作，好处多多。学习不必教条，一切以实际需求为主。本文章以带头的链表作为示例。</p>
-</blockquote>
-<p>单链表的结点可以简单定义如下：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Node 结点</span></span><br><span class="line"><span class="keyword">type</span> Node <span class="keyword">struct</span> {</span><br><span class="line">    Value <span class="type">int</span>   <span class="comment">// 数据</span></span><br><span class="line">    Next  *Node <span class="comment">// 下一个结点</span></span><br><span class="line">}</span><br></pre></td></tr></table></figure>
-
-<p>其中，<code>Value</code> 用来存放结点数据，这里存放的是整型。<code>Next</code> 指向链表的下一个 <code>Node</code>。</p>
-<hr>
-<p>在一些课本上将链表的初始化分为<strong>头插法</strong>和<strong>尾插法</strong>，原理大同小异，不过一个将新结点连接到头部一个将新结点连接到尾部罢了，这里以更符合直觉的尾插法为例：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Init 初始化</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(node *Node)</span></span> Init(n <span class="type">int</span>) {</span><br><span class="line">    p := node</span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">1</span>; i &lt;= n; i++ {</span><br><span class="line">        newNode := &amp;Node{Value: i}</span><br><span class="line">        p.Next = newNode</span><br><span class="line">        p = newNode</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
-
-<p><strong>注意不要修改头结点</strong>。当你对链表进行遍历时，会更新当前结点为下一个结点，而头结点指向单链表的第一个结点，如果头结点被修改了，你就找不到完整的链表了。所以我们应当将头结点拷贝一份，再对备份数据进行操作。</p>
-<hr>
-<p>实现一个链表的遍历并打印结点数据，我们可以利用尾结点指向空来判断遍历是否结束：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Display 打印链表</span></span><br><span class="line"><span class="comment">// Display 打印链表</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(node *Node)</span></span> Display() {</span><br><span class="line">    <span class="keyword">for</span> p := node.Next; p != <span class="literal">nil</span>; p = p.Next {</span><br><span class="line">        fmt.Printf(<span class="string">"%d "</span>, p.Value)</span><br><span class="line">    }</span><br><span class="line">    fmt.Println()</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
-
-<p>对于带头结点的单链表，头结点并不存储实际数据，所以要从第二个结点开始读取数据。</p>
-<hr>
-<p>现在，你可以使用上述两个方法获取属于自己的单链表了：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> {</span><br><span class="line">    link := <span class="built_in">new</span>(Node)</span><br><span class="line">    link.Init(<span class="number">5</span>)</span><br><span class="line">    link.Display()</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
-
-<p>在上述代码中，我们首先构造了一个结点作为头结点，然后使用尾插法初始化单链表，最后打印这个单链表的所有数据。输出结果如下：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span> <span class="number">2</span> <span class="number">3</span> <span class="number">4</span> <span class="number">5</span></span><br></pre></td></tr></table></figure>
-
-<hr>
-<p>既然我们已经学会了如何遍历单链表，那么自然就可以查找结点了：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Search 查找结点</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(node *Node)</span></span> Search(value <span class="type">int</span>) *Node {</span><br><span class="line">    <span class="keyword">for</span> p := node.Next; p != <span class="literal">nil</span>; p = p.Next {</span><br><span class="line">        <span class="keyword">if</span> p.Value == value {</span><br><span class="line">            <span class="keyword">return</span> p</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">}</span><br></pre></td></tr></table></figure>
-
-<p>上述代码中，我们遍历整个链表，如果找到了想要的数据，就将该数据所在结点返回。如果遍历完了都没有找到，就返回 <code>nil</code>。</p>
-<hr>
-<p>头结点其实和普通结点没有任何区别，只是在逻辑上比较特殊罢了，它和普通结点一样拥有数据域，我们不应该浪费这段空间。现在，让我们想办法利用头结点来存储一些数据。</p>
-<p>试想一下我们要怎么获取单链表的长度？很简单，遍历时加上计数就是了。但是在链表的操作中“长度”是一个要频繁更新和使用的值，如果每次使用都要整个遍历一遍链表那效率也太低了。</p>
-<p>我们完全可以将链表的长度存放在头结点中，在对链表进行增删时当即更新长度数据，这样在要用到链表长度时直接读取头结点的数据就好了。</p>
-<p>比如上面提到过的单链表的初始化：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Init 初始化</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(node *Node)</span></span> Init(n <span class="type">int</span>) {</span><br><span class="line">    p := node</span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">1</span>; i &lt;= n; i++ {</span><br><span class="line">        newNode := &amp;Node{Value: i}</span><br><span class="line">        p.Next = newNode</span><br><span class="line">        p = newNode</span><br><span class="line">    }</span><br><span class="line">    node.Value = n <span class="comment">// 存储单链表长度</span></span><br><span class="line">}</span><br></pre></td></tr></table></figure>
-
-<p>如此，获取单链表的长度代码如下：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Len 链表的长度</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(node *Node)</span></span> Len() <span class="type">int</span> {</span><br><span class="line">	<span class="keyword">return</span> node.Value</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>这里的链表长度记录方法只是一种可行的方法罢了，绝对说不上好。比如如果单链表的数据类型不是整形而是字符串呢？都会麻烦很多。更推荐的做法是单独定义一个单链表结构体，将长度等相关信息直接存放在结构体中，大概的结构如下：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> Link <span class="keyword">struct</span> {</span><br><span class="line">    Len <span class="type">int</span>     <span class="comment">// 链表长度</span></span><br><span class="line">    Head *Node <span class="comment">// 头结点</span></span><br><span class="line">}</span><br></pre></td></tr></table></figure>
-<p>总之还是那句话，不要教条学习，本文章大多还是简单的演示示例，具体还得结合实际需求自己多写多尝试。</p>
+<p>具体内容请点击上方链接跳转相关文章。</p>
 </blockquote>
 ]]></content>
       <categories>
