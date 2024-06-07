@@ -51,12 +51,8 @@ darkmode: true
 # ---------------------------------------------------------------
 
 favicon:
-  small: images/favicon-16x16.png
-  medium: images/favicon-32x32.png
-  apple_touch_icon: images/apple-icon-180x180.png
-  safari_pinned_tab:
-  android_manifest: images/manifest.json
-  ms_browserconfig: images/browserconfig.xml
+  small: /images/favicon-16x16.png
+  medium: /images/favicon-32x32.png
 
 # Custom Logo (Warning: Do not support scheme Mist)
 custom_logo: #/uploads/custom-logo.png
